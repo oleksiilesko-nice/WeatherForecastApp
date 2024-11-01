@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Weather Forecast";
+}
+
+<div class="forecast-container">
+    <h2 class="forecast-header">Weather Forecast</h2>
+
+    <form action="/WeatherForecast/GetWeather" method="post" class="forecast-form" onsubmit="saveLastCity()">
+        <input type="text" id="cityName" name="cityName" class="form-input" required autocomplete="off" list="cityList" placeholder="Please enter a city name..."
+               oninvalid="this.setCustomValidity('Please enter a valid city name in English.')"
+               oninput="this.setCustomValidity('')"
+               pattern="^[A-Za-z\s]+$" title="Please enter a city name using only English letters." />
+        <datalist id="cityList"></datalist>
+        <button type="submit" class="submit-button">Get Weather</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        updateCityList();
+    });
+
+    function updateCityList() {
+        const cityList = document.getElementById("cityList");
+        cityList.innerHTML = "";
+        const cities = JSON.parse(localStorage.getItem("cities")) || [];
+
+        cities.forEach(city => {
+            const option = document.createElement("option");
+            option.value = city;
+            cityList.appendChild(option);
+        });
+    }
+
+    function saveLastCity() {
+        const cityName = document.getElementById("cityName").value;
+
+        const cities = JSON.parse(localStorage.getItem("cities")) || [];
+        if (!cities.includes(cityName)) {
+            cities.push(cityName);
+            localStorage.setItem("cities", JSON.stringify(cities));
+        }
+    }
+</script>
+
+<style>
+    .forecast-container {
+        font-family: Arial, sans-serif;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 2em;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .forecast-header {
+        font-size: 1.8em;
+        color: #003366;
+        text-align: center;
+        margin-bottom: 1em;
+    }
+
+    .forecast-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-input {
+        padding: 0.5em;
+        margin-bottom: 1em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+    }
+
+    .submit-button {
+        padding: 0.7em;
+        border: none;
+        border-radius: 4px;
+        background-color: #0066cc;
+        color: white;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .submit-button:hover {
+            background-color: #004d99;
+        }
+</style>
